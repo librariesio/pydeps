@@ -11,27 +11,20 @@ module Pydeps
     end
 
     def run_command(mirror = true)
-      cmd = command(mirror)
-      _stdin, stdout, stderr = Open3.popen3(cmd)
-      {
-        err: stderr.read,
-        res: stdout.read
-      }
+      _stdin, stdout, stderr = Open3.popen3(command(mirror))
+      { err: stderr.read, res: stdout.read }
+    end
+
+    def run_with_fallback
+      with_mirror = run_command
+      return with_mirror[:res] if with_mirror[:err].empty?
+      without_mirror = run_command(false)
+      return with_mirror[:res] if without_mirror[:err].empty?
     end
 
     def find_dependencies
-      with_mirror = run_command
-
-      if !with_mirror[:err].empty?
-        without_mirror = run_command(false)
-        if !without_mirror[:err].empty?
-          puts without_mirror[:err]
-        else
-          parse(with_mirror[:res])
-        end
-      else
-        parse(with_mirror[:res])
-      end
+      output = run_with_fallback
+      parse(output) if output
     end
 
     def parse(output)
