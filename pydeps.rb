@@ -17,6 +17,18 @@ module Pydeps
       end
     end
 
+    def to_json
+      find_dependencies.map do |dep|
+        match = dep.gsub(' ', '').match(/^([a-z0-9]+[a-z0-9\-_\.]+)([><=\d\.,]+)?/i)
+        name = match[1]
+        requirements = match[2]
+        {
+          name: name,
+          requirements: requirements
+        }
+      end.to_json
+    end
+
     private
 
     def memcached_client
