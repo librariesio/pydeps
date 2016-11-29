@@ -3,8 +3,10 @@ Bundler.require
 
 require File.expand_path '../app.rb', __FILE__
 
-use Rack::Auth::Basic, "Restricted Area" do |username, password|
-  username == ENV['USERNAME'] and password == ENV['PASSWORD']
+if ENV['USERNAME'] && ENV['PASSWORD']
+  use Rack::Auth::Basic, "Restricted Area" do |username, password|
+    username == ENV['USERNAME'] and password == ENV['PASSWORD']
+  end
 end
 
 require './app'
