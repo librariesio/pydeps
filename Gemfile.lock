@@ -17,7 +17,7 @@ GEM
     net-scp (1.2.1)
       net-ssh (>= 2.6.5)
     net-ssh (4.1.0)
-    puma (3.7.1)
+    puma (3.8.0)
     rack (1.6.5)
     rack-protection (1.5.3)
       rack
@@ -46,4 +46,4 @@ RUBY VERSION
    ruby 2.3.3p222
 
 BUNDLED WITH
-   1.14.5
+   1.14.6
