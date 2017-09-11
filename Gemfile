@@ -8,4 +8,5 @@ gem 'dalli'
 
 group :development do
   gem 'capistrano'
+  gem 'capistrano-bundler'
 end
