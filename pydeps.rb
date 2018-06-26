@@ -64,7 +64,7 @@ module Pydeps
       with_mirror = run_command
       return with_mirror[:res] if with_mirror[:err].empty?
       without_mirror = run_command(false)
-      return with_mirror[:res] if without_mirror[:err].empty?
+      return without_mirror[:res] if without_mirror[:err].empty?
     end
   end
 end
