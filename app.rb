@@ -12,4 +12,8 @@ class PydepsAPI < Sinatra::Base
       {error: "Can't calculate dependencies for #{params[:name]} #{params[:version]}"}.to_json
     end
   end
+
+  get '/' do
+    'pydeps'
+  end
 end
