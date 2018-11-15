@@ -1,6 +1,6 @@
 FROM ruby:2.4.2-alpine
 RUN apk add --update \
-  build-base \
+  build-base py-pip \
   && rm -rf /var/cache/apk/*
 
 # throw errors if Gemfile has been modified since Gemfile.lock
