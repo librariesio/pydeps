@@ -1,5 +1,7 @@
 require "open3"
 require "fileutils"
+require "dalli"
+require "tmpdir"
 
 module Pydeps
   class Resolver
