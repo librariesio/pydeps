@@ -1,4 +1,5 @@
 require "open3"
+require "fileutils"
 
 module Pydeps
   class Resolver
@@ -12,7 +13,7 @@ module Pydeps
 
     def find_dependencies
       memcached_client.fetch(cache_key) do
-        output = run_with_fallback
+        output = run_fetch
         output ? parse(output) : "err"
       end
     end
@@ -50,21 +51,19 @@ module Pydeps
       output.split("\n")
     end
 
-    def command(mirror = true)
-      mirror_flags = mirror ? "-i http://pypi.libraries.io/simple --no-binary :all: --trusted-host pypi.libraries.io" : ""
-      "pip download #{name}==#{version} -d /tmp #{mirror_flags} | grep 'from #{name}' | cut -d' ' -f2"
+    def command(tmpdir)
+      "pip download #{name}==#{version} -d #{tmpdir} --no-cache-dir --no-binary all | grep 'from #{name}' | cut -d' ' -f2"
     end
 
-    def run_command(mirror = true)
-      _stdin, stdout, stderr = Open3.popen3(command(mirror))
-      { err: stderr.read, res: stdout.read }
-    end
-
-    def run_with_fallback
-      with_mirror = run_command
-      return with_mirror[:res] if with_mirror[:err].empty?
-      without_mirror = run_command(false)
-      return without_mirror[:res] if without_mirror[:err].empty?
+    def run_fetch
+      begin
+        tmpdir = Dir.mktmpdir
+        _stdin, stdout, stderr = Open3.popen3(command(tmpdir))
+        result = { err: stderr.read, res: stdout.read }
+        return result[:res] if result[:err].empty?
+      ensure
+        FileUtils.rm_rf(tmpdir)
+      end
     end
   end
 end
