@@ -54,7 +54,7 @@ module Pydeps
     end
 
     def command(tmpdir)
-      "pip download #{name}==#{version} -d #{tmpdir} --no-cache-dir --no-binary all | grep 'from #{name}' | cut -d' ' -f2"
+      "pip download #{name}==#{version} -d #{tmpdir} --no-cache-dir --no-binary all --disable-pip-version-check | grep 'from #{name}' | cut -d' ' -f2"
     end
 
     def run_fetch
