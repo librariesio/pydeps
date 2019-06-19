@@ -53,15 +53,20 @@ module Pydeps
       output.split("\n")
     end
 
-    def command(tmpdir)
-      "pip download #{name}==#{version} -d #{tmpdir} --no-cache-dir --no-binary all --disable-pip-version-check | grep 'from #{name}' | cut -d' ' -f2"
+    def command(tmpdir, pip_tool='pip3')
+      "#{pip_tool} download #{name}==#{version} -d #{tmpdir} --no-cache-dir --no-binary all --disable-pip-version-check | grep 'from #{name}' | cut -d' ' -f2"
     end
 
     def run_fetch
       begin
         tmpdir = Dir.mktmpdir
-        _stdin, stdout, stderr = Open3.popen3(command(tmpdir))
+        _stdin, stdout, stderr = Open3.popen3(command(tmpdir, 'pip3'))
         result = { err: stderr.read, res: stdout.read }
+        unless result[:err].empty?
+          # fall back to python2 pip if errors exist
+          _stdin, stdout, stderr = Open3.popen3(command(tmpdir, 'pip2'))
+          result = { err: stderr.read, res: stdout.read }
+        end
         return result[:res] if result[:err].empty?
       ensure
         FileUtils.rm_rf(tmpdir)
