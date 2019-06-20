@@ -53,7 +53,7 @@ module Pydeps
       output.split("\n")
     end
 
-    def command(tmpdir, pip_tool='pip3')
+    def command(tmpdir, pip_tool)
       "#{pip_tool} download #{name}==#{version} -d #{tmpdir} --no-cache-dir --no-binary all --disable-pip-version-check | grep 'from #{name}' | cut -d' ' -f2"
     end
 
