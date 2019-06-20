@@ -1,6 +1,6 @@
-FROM ruby:2.4.2-alpine
+FROM ruby:2.6.3-alpine
 RUN apk add --update \
-  build-base py-pip python3 \
+  build-base py-pip python2 python2-dev python3 python3-dev \
   && rm -rf /var/cache/apk/*
 
 # throw errors if Gemfile has been modified since Gemfile.lock
